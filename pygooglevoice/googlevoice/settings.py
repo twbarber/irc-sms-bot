@@ -12,6 +12,7 @@ smsKey=
 [gvoice]
 # Number to place calls from (eg, your google voice number)
 forwardingNumber=
+"""
 
 # Default phoneType for your forwardingNumber as defined below
 #  1 - Home
@@ -19,7 +20,7 @@ forwardingNumber=
 #  3 - Work
 #  7 - Gizmo
 phoneType=2
-"""
+
 
 TYPES = {
     0: 'missed',
