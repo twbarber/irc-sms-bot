@@ -1,2 +1,7 @@
-# Test Lists #
+# Test Comfiguration Files #
 nums
+server
+
+# Auto Generated Files #
+*~
+.DS_Store
