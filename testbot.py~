@@ -1,0 +1,42 @@
+import socket
+import re
+from googlevoice import Voice
+from googlevoice.util import input
+
+def send_sms_message(contact):
+   numbers = {'YOUR_NUMBER'}
+   for i in numbers:
+      phoneNumber = i
+      text = ('Hi! I\'m the SUNY Potsdam Nerds Texting Bot.')
+      voice.send_sms(phoneNumber, text)
+
+voice = Voice()
+voice.login()
+server='YOUR_SERVER'
+port = 6667
+irc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+irc.connect((server, port))
+print irc.recv(4096)
+irc.send ('NICK smsbot\r\n')
+irc.send ('USER smsbot smsbot smsbot :Python IRC\r\n')
+irc.send ('JOIN #nerds\r\n')
+irc.send ('PRIVMSG #nerds :Hello World.\r\n')
+while True:
+   data = irc.recv(4096)
+   if data.find('PING') != -1:
+      irc.send ('PONG ' + data.split() [1] + '\r\n')
+   if data.find('hi botty') != -1:
+      irc.send ('PRIVMSG #nerds :I already said hi...\r\n')
+   if data.find('hello botty') != -1:
+      irc.send ('PRIVMSG #nerds :I already said hi...\r\n')
+   if data.find('KICK') != -1:
+      irc.send ('JOIN #nerds\r\n')
+   if data.find('cheese') != -1:
+      irc.send ('PRIVMSG #nerds :WHERE!!!!!!\r\n' )
+   if data.find('sms') != -1:
+      matches = re.search("sms (\w+)", data)
+      if matches:
+         send_sms_message(matches.group(1))
+         irc.send ('PRIVMSG #nerds :Message Sent\r\n')
+   print data 
+
