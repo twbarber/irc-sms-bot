@@ -1,3 +1,46 @@
-IRC SMS Bot - Written in Python
+IRC SMS Bot - Written for Python 2
 
+Uses pygooglevoice library by Joe McCall & Justin Quick
+GitHub: https://github.com/pettazz/pygooglevoice
+Full Documentation: http://sphinxdoc.github.com/pygooglevoice/
 
+There are 2 files that need to be created for testbot.py to run...
+
+    server
+    nums
+
+Currently uses config file 'server' in irc-sms-bot directory to 
+configure server. Format is as follows:
+
+    Server.Address
+    PortNumber
+    gmail_account@gmail.com
+    PlainTextGmailPassword
+    
+    Example:
+    
+        mywebsite.com
+        6667
+        testemail@gmail.com
+        hunter2
+    
+The numbers you wish to text are also stored as plain text in a file called
+'nums' in the irc-sms-bot directory as follows:
+
+    Number1
+    Number2
+    Number3
+    
+    Example: 
+    
+        8005551234  
+        1234567891  
+        1231231234
+      
+TODO:
+    
+    - Put delay between sent messages to not flood GVoice
+    - Catch blatant spamming of messages in IRC
+    - Improve overall stability
+
+    
