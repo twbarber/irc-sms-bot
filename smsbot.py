@@ -3,6 +3,7 @@ import time
 import re
 from googlevoice import Voice
 from googlevoice.util import input
+from os import listdir
 
 """ 
     Reads server and login info in from config file...
@@ -13,6 +14,15 @@ def get_server_info():
       settings = f.read().splitlines()
       return settings
 
+"""
+
+"""
+def get_available_lists():
+  available_lists = listdir("./lists")
+  return available_lists
+
+"""
+"""
 def connect_to_server(server, port, channel):
   irc.connect((server, port))
   print irc.recv(4096)
@@ -29,9 +39,12 @@ def get_contact_list(contact_list):
   try:
     with open('lists/' + contact_list) as f:
       numbers = f.read().splitlines()
+      print numbers
       return numbers
   except IOError as e:
-    print "I/O error({0}): {1}".format(e.errno, e.strerror)
+    print 'Contact List Doesn\'t Exist'
+    numbers = ['ERROR']
+    return numbers
 
 """
     Runs through sequence of sending a message
@@ -97,6 +110,8 @@ def send_sms_message(target_contact_list, message):
 def send_help_dialog(requester):
   irc.send ('PRIVMSG ' + sender.group(1) + 
   ' :Hi! Send messages like this: sendsms [AddressBook]\r\n')
+
+
             
 # Populate vars with info needed to make connection
 server_info = get_server_info()
@@ -104,7 +119,11 @@ server= server_info[0]
 port = int(server_info[1])
 channel = server_info[2]
 auth_password = server_info[3]
+available_number_lists = get_available_lists()
+
+# Prints relevant configuration information
 print 'Server: ' + server + ':' + str(port)
+print 'Lists: ' + str(available_number_lists)
 
 # Connects to GVoice
 voice = Voice()
@@ -136,13 +155,17 @@ while True:
   # New request to send message 
   if data.find('sendsms') != -1:
     number_list = re.search("sendsms (\w+)", data)
+    target_number_list = number_list.group(1)
     if  number_list:
-      print sender.group(1)
-      print number_list.group(0)
-      new_message_sequence(channel, sender.group(1),  number_list.group(1))    
+      if target_number_list in available_number_lists:
+        new_message_sequence(channel, sender.group(1),  number_list.group(1))  
+      else:
+        irc.send ('PRIVMSG ' + channel + 
+                    ' :Sorry, I don\'t have a \'' + target_number_list +
+                    '\' list.\r\n')  
     else:
       irc.send ('PRIVMSG ' + channel + 
-                  ' :You must include an address book.\r\n')
+                  ' :You must include a number list.\r\n')
 
   # Prints data received from IRC Channel
   print data 
