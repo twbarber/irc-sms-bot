@@ -15,13 +15,16 @@ def get_server_info():
       return settings
 
 """
-
+    Search './lists' directory for all files.
+    Populates available lists to read from.                       
 """
 def get_available_lists():
   available_lists = listdir("./lists")
   return available_lists
 
 """
+    Connects to IRC server and channel specified in config
+    file 'server'
 """
 def connect_to_server(server, port, channel):
   irc.connect((server, port))
@@ -80,6 +83,7 @@ def authorize_to_send(initiator):
                 ' :*** Invalid password, try again. (' + 
                  '%d) Attempts remaining. ***\r\n' % attempts)
   return False
+
 """
     Used to get desired message from user
 """              
@@ -107,10 +111,21 @@ def send_sms_message(target_contact_list, message):
 """
     Sends help dialog via PM to user
 """
-def send_help_dialog(requester):
-  irc.send ('PRIVMSG ' + sender.group(1) + 
-  ' :Hi! Send messages like this: sendsms [AddressBook]\r\n')
+def send_help_dialog(initiator):
+  irc.send ('PRIVMSG ' + initiator + 
+            ' :Hi! I\'m the smsbot!\r\n')
+  irc.send ('PRIVMSG ' + initiator + 
+            ' :Send messages like this: sendsms [NumberList]\r\n')
+  irc.send ('PRIVMSG ' + initiator + 
+            ' :See what number lists are available like this: smsbot lists\r\n')
 
+"""
+    Displays available number lists to channel
+"""
+def send_lists_dialogue(channel):
+  irc.send ('PRIVMSG ' + channel + 
+            ' :Here are the available number lists: ' +
+            str(available_number_lists) + '.\r\n')
 
             
 # Populate vars with info needed to make connection
@@ -151,6 +166,8 @@ while True:
   if sender and sender.group(1) != 'smsbot':  
     if data.find('smsbot help') != -1:
       send_help_dialog(sender.group(1))
+    if data.find('smsbot lists') != -1:
+      send_lists_dialogue(channel)
   
   # New request to send message 
   if data.find('sendsms') != -1:
