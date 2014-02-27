@@ -4,6 +4,9 @@ Uses pygooglevoice library by Joe McCall & Justin Quick
 GitHub: https://github.com/pettazz/pygooglevoice
 Full Documentation: http://sphinxdoc.github.com/pygooglevoice/
 
+You need to run the general setup for pygooglevoice before you 
+can run this bot. I will look into a fix for this soon.
+
 There are 2 files that need to be created for testbot.py to run...
 
     server
@@ -39,8 +42,11 @@ The numbers you wish to text are also stored as plain text in a file called
       
 TODO:
     
-    - Put delay between sent messages to not flood GVoice
-    - Catch blatant spamming of messages in IRC
+    - Custom messages
+    - Reading address books
+    - Passwords uniquer to address book
     - Improve overall stability
+    - Only catch relevant irc messages when in send sequence
+        currently can get interrupted by others
 
     
