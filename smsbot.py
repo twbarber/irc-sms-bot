@@ -17,21 +17,13 @@ def get_server_info():
     Reads numbers from file...
     *** DO NOT PUSH THAT NUMBER FILE EVER YOU IDIOT ***
 """
-def get_number_list():
-    with open('nums') as f:
+def get_contact_list(contact_list):
+    try:
+      with open('lists/' + contact_list) as f:
         numbers = f.read().splitlines()
         return numbers
-        
-"""
-    Uses pygooglevoice to send sms to list of numbers.
-"""
-def send_sms_message(contact, message):
-   numbers = get_number_list()
-   text = message
-   for i in numbers:
-      phoneNumber = i
-      voice.send_sms(phoneNumber, text)
-      time.sleep(2)
+    except IOError as e:
+      print "I/O error({0}): {1}".format(e.errno, e.strerror)
       
 """
     Verifies password for sending in order to prevent spamming
@@ -66,6 +58,14 @@ def get_message(initiator):
       message = re.search('PRIVMSG smsbot :(.*)' ,data) 
   return message.group(1)
 
+"""
+    Uses pygooglevoice to send sms to list of numbers.
+"""
+def send_sms_message(target_contact_list, message):
+   for i in target_contact_list:
+      phoneNumber = i
+      voice.send_sms(phoneNumber, message)
+      time.sleep(2)
             
 # Populate vars with info needed to make connection
 server_info = get_server_info()
@@ -107,8 +107,9 @@ while True:
           irc.send ('PRIVMSG ' + channel + 
                     ' :Request received, see PM for instructions.\r\n')
           authorize_to_send(sender.group(1))
+          target_contact_list = get_contact_list(contact_list.group(1))
           message = get_message(sender.group(1))
-          send_sms_message(contact_list.group(1), message)
+          send_sms_message(target_contact_list, message)
           irc.send ('PRIVMSG ' + sender.group(1) + 
                     ' :*** Message Sent ***\r\n')
       else:
