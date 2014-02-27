@@ -25,11 +25,11 @@ def get_number_list():
 """
     Uses pygooglevoice to send sms to list of numbers.
 """
-def send_sms_message(contact):
+def send_sms_message(contact, message):
    numbers = get_number_list()
+   text = message
    for i in numbers:
       phoneNumber = i
-      text = ('Hi! I\'m the SUNY Potsdam Nerds Texting Bot.')
       voice.send_sms(phoneNumber, text)
       time.sleep(2)
       
@@ -52,6 +52,11 @@ def authorize_to_send(sender):
             irc.send ('PRIVMSG ' + sender + 
                         ' :*** Invalid password, try again. (' + 
                          '%d) Attempts remaining. ***\r\n' % attempts)
+"""
+    Used to get desired message from user
+"""              
+def get_message(sender):
+    return 'Test'
             
 # Populate vars with info needed to make connection
 server_info = get_server_info()
@@ -92,7 +97,8 @@ while True:
             irc.send ('PRIVMSG ' + channel + 
                           ' :Request received, see PM for instructions.\r\n')
             authorize_to_send(sender.group(1))
-            send_sms_message(contact_list.group(1))
+            message = get_message(sender.group(1))
+            send_sms_message(contact_list.group(1), message)
             irc.send ('PRIVMSG ' + sender.group(1) + 
                         ' :*** Message Sent ***\r\n')
       else:
