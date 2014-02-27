@@ -55,8 +55,17 @@ def authorize_to_send(sender):
 """
     Used to get desired message from user
 """              
-def get_message(sender):
-    return 'Test'
+def get_message(initiator):
+  irc.send ('PRIVMSG ' + initiator + ' :*** Enter Message ***\r\n')
+  message = ''
+  while message == '':
+    data = irc.recv(4096)
+    sender = re.search('\:(\w+)\!', data)
+    if sender and sender.group(1) == initiator:
+      print sender.group(1)
+      message = re.search('PRIVMSG smsbot :(.*)' ,data) 
+  return message.group(1)
+
             
 # Populate vars with info needed to make connection
 server_info = get_server_info()
@@ -81,30 +90,31 @@ irc.send ('USER smsbot smsbot smsbot :Python IRC\r\n')
 irc.send ('JOIN ' + channel +'\r\n')
 irc.send ('PRIVMSG ' + channel + ' :Hello World.\r\n')
 while True:
-   data = irc.recv(4096)
-   sender = re.search("\:(\w+)\!", data)
-   if data.find('PING') != -1:
-      irc.send ('PONG ' + data.split() [1] + '\r\n')
-   if data.find('KICK') != -1:
-      irc.send ('JOIN ' + channel + '\r\n')
-   if data.find('smsbot help') != -1:
+  data = irc.recv(4096)
+  sender = re.search("\:(\w+)\!", data)
+  if data.find('PING') != -1:
+    irc.send ('PONG ' + data.split() [1] + '\r\n')
+  if data.find('KICK') != -1:
+    irc.send ('JOIN ' + channel + '\r\n')
+  if sender and sender.group(0) != 'smsbot':  
+    if data.find('smsbot help') != -1:
       irc.send ('PRIVMSG ' + sender.group(1) + 
-                   ' :Hi! Send messages like this: sendsms [AddressBook]\r\n')
-   if data.find('sendsms') != -1 and sender != 'smsbot':
+                ' :Hi! Send messages like this: sendsms [AddressBook]\r\n')
+    if data.find('sendsms') != -1:
       contact_list = re.search("sendsms (\w+)", data)
       if contact_list:
-         if sender: 
-            irc.send ('PRIVMSG ' + channel + 
-                          ' :Request received, see PM for instructions.\r\n')
-            authorize_to_send(sender.group(1))
-            message = get_message(sender.group(1))
-            send_sms_message(contact_list.group(1), message)
-            irc.send ('PRIVMSG ' + sender.group(1) + 
-                        ' :*** Message Sent ***\r\n')
+        if sender: 
+          irc.send ('PRIVMSG ' + channel + 
+                    ' :Request received, see PM for instructions.\r\n')
+          authorize_to_send(sender.group(1))
+          message = get_message(sender.group(1))
+          send_sms_message(contact_list.group(1), message)
+          irc.send ('PRIVMSG ' + sender.group(1) + 
+                    ' :*** Message Sent ***\r\n')
       else:
-         irc.send ('PRIVMSG ' + channel + 
-                          ' :You must include an address book.\r\n')
-   print data 
+        irc.send ('PRIVMSG ' + channel + 
+                  ' :You must include an address book.\r\n')
+  print data 
    
 
 
