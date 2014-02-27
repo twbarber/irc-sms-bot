@@ -1,6 +1,7 @@
 # Test Comfiguration Files #
 nums
 nums2
+.gitignore~
 server
 
 # Auto Generated Files #
