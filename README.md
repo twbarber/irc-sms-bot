@@ -2,8 +2,8 @@ IRC SMS Bot - Written for Python 2
 ==================================
 
 
-Uses **pygooglevoice** library by Joe McCall & Justin Quick
-**GitHub:** https://github.com/pettazz/pygooglevoice
+Uses **pygooglevoice** library by Joe McCall & Justin Quick<br>
+**GitHub:** https://github.com/pettazz/pygooglevoice<br>
 **Full Documentation:** http://sphinxdoc.github.com/pygooglevoice/
 
 You need to run the general setup for pygooglevoice before you
