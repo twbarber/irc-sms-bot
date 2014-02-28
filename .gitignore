@@ -3,6 +3,7 @@ nums
 nums2
 .gitignore~
 server
+lists/
 
 # Auto Generated Files #
 *~
