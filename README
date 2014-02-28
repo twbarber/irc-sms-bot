@@ -26,8 +26,13 @@ configure server. Format is as follows:
     
         mywebsite.com
         6667
+        #l337h4x0r5
+        hunter2*
         testemail@gmail.com
-        hunter2
+        hunter2**
+    
+    * Using 'hunter2' as a password is not advisable.
+    ** Duplicating passwords, especially 'hunter2' is also not advisable.
     
 The numbers you wish to text are also stored as plain text in a file named
 whatever you'd like in the irc-sms-bot/lists directory as follows:
