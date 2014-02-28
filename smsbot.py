@@ -171,8 +171,8 @@ connect_to_server(server, port, channel)
 
 while True:
   data = irc.recv(4096)
-  sender = re.search("\:(\w+)\!", data)
-  
+  sender = re.search("\:(\w+\-*\w+)\!", data)
+
   # Replies to remian connected to server
   if data.find('PING') != -1:
     irc.send ('PONG ' + data.split() [1] + '\r\n')
