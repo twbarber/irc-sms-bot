@@ -1,9 +1,10 @@
 import socket
 import time
 import re
+import signal
+from os import listdir
 from googlevoice import Voice
 from googlevoice.util import input
-from os import listdir
 
 """ 
     Reads server and login info in from config file...
@@ -55,34 +56,44 @@ def get_contact_list(contact_list):
 def new_message_sequence(current_channel, sender, number_list):
   irc.send ('PRIVMSG ' + current_channel + 
                   ' :Request received, see PM for instructions.\r\n')
+  signal.alarm(TIMEOUT)
   verified = authorize_to_send(sender)
-  target_number_list = get_contact_list(number_list)
-  message = get_message(sender)
-  send_sms_message(target_number_list, message)
-  irc.send ('PRIVMSG ' + sender + 
+  if verified:
+    target_number_list = get_contact_list(number_list)
+    message = get_message(sender)
+    send_sms_message(target_number_list, message)
+    irc.send ('PRIVMSG ' + sender + 
             ' :*** Message Sent ***\r\n')
+  else:
+    irc.send ('PRIVMSG ' + sender + 
+            ' :*** Password incorrect, try again. ***\r\n')
 
 """
     Verifies password for sending in order to prevent spamming
     Also loaded from 'server' config file.
 """
 def authorize_to_send(initiator):
-  irc.send ('PRIVMSG ' + initiator + ' :*** Enter Password ***\r\n')
-  attempts = 3
-  while attempts > 0:
-    data = irc.recv(4096)
-    message_sender = re.search('\:(\w+)\!', data)
-    if message_sender and message_sender.group(1) == initiator:
-      if data.find(auth_password) != -1:
-        irc.send ('PRIVMSG ' + initiator + 
-                ' :*** Password Accepted ***\r\n')
-        return True
-      else:
-        attempts -= 1
-        irc.send ('PRIVMSG ' + initiator + 
-                ' :*** Invalid password, try again. (' + 
-                 '%d) Attempts remaining. ***\r\n' % attempts)
-  return False
+  try:
+    irc.send ('PRIVMSG ' + initiator + ' :*** Enter Password ***\r\n')
+    attempts = 3
+    while attempts > 0:
+      data = irc.recv(4096)
+      message_sender = re.search('\:(\w+)\!', data)
+      if message_sender and message_sender.group(1) == initiator:
+        if data.find(auth_password) != -1:
+          signal.alarm(0)
+          irc.send ('PRIVMSG ' + initiator + 
+                  ' :*** Password Accepted ***\r\n')
+          return True
+        else:
+          attempts -= 1
+          irc.send ('PRIVMSG ' + initiator + 
+                  ' :*** Invalid password, (' + 
+                   '%d) attempts remaining. ***\r\n' % attempts)
+    return False
+  except:
+    return False
+
 
 """
     Used to get desired message from user
@@ -117,7 +128,8 @@ def send_help_dialog(initiator):
   irc.send ('PRIVMSG ' + initiator + 
             ' :Send messages like this: sendsms [NumberList]\r\n')
   irc.send ('PRIVMSG ' + initiator + 
-            ' :See what number lists are available like this: smsbot lists\r\n')
+            ' :See what number lists are available like this: smsbot'
+            + 'lists\r\n')
 
 """
     Displays available number lists to channel
@@ -127,7 +139,14 @@ def send_lists_dialogue(channel):
             ' :Here are the available number lists: ' +
             str(available_number_lists) + '.\r\n')
 
-            
+def interrupted(signum, frame):
+  irc.send ('PRIVMSG ' + channel + 
+            ' :Authorization timed out.\r\n')
+
+# Used for auth timeouts
+signal.signal(signal.SIGALRM, interrupted)
+TIMEOUT = 10           
+
 # Populate vars with info needed to make connection
 server_info = get_server_info()
 server= server_info[0]
@@ -172,10 +191,11 @@ while True:
   # New request to send message 
   if data.find('sendsms') != -1:
     number_list = re.search("sendsms (\w+)", data)
-    target_number_list = number_list.group(1)
     if  number_list:
+      target_number_list = number_list.group(1)
       if target_number_list in available_number_lists:
-        new_message_sequence(channel, sender.group(1),  number_list.group(1))  
+        new_message_sequence(channel, sender.group(1),  
+                              number_list.group(1))  
       else:
         irc.send ('PRIVMSG ' + channel + 
                     ' :Sorry, I don\'t have a \'' + target_number_list +
@@ -186,6 +206,3 @@ while True:
 
   # Prints data received from IRC Channel
   print data 
-   
-
-
