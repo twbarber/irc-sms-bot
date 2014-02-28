@@ -1,6 +1,9 @@
-IRC SMS Bot - Written for Python 2
+IRC SMS Bot
 ==================================
 
+A bot for IRC written in Python 2 that sends SMS messages to a desired list of numbers.<br>
+A **Google Voice account is required** and configuration of server and data files
+are also necessary to run after downloading.
 
 Uses **pygooglevoice** library by Joe McCall & Justin Quick<br>
 **GitHub:** https://github.com/pettazz/pygooglevoice<br>
