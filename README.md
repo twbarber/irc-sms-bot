@@ -1,7 +1,7 @@
 ##IRC SMS Bot
 
-#####A bot for IRC written in Python 2 that sends SMS messages to a desired list of numbers.<br>
-A **Google Voice account is required** and configuration of server and data files
+#####An IRC bot written in Python 2 that sends SMS messages to a desired list of numbers.<br>
+A **Google Voice account** and **Linux OS** are requierd. Configuration of server and data files
 are also necessary to run after downloading.
 
 Uses **pygooglevoice** library by Joe McCall & Justin Quick<br>
@@ -64,5 +64,6 @@ whatever you'd like in the irc-sms-bot/lists directory as follows:
 **TODO:**
 
     - Passwords unique to address book
+    - Change timeout function to work outside of linux
     - Improve overall stability
     - Make it so pygooglevoice doesn't have to be installed on the machine
