@@ -7,16 +7,18 @@ Full Documentation: http://sphinxdoc.github.com/pygooglevoice/
 You need to run the general setup for pygooglevoice before you 
 can run this bot. I will look into a fix for this soon.
 
-There are 2 files that need to be created for testbot.py to run...
+After pygooglevoice is installed, there are 2 files that need to be created for testbot.py to run...
 
     server
-    nums
+    ./lists/<numberLists>
 
 Currently uses config file 'server' in irc-sms-bot directory to 
 configure server. Format is as follows:
 
     Server.Address
     PortNumber
+    Channel
+    MasterPassw0rd
     gmail_account@gmail.com
     PlainTextGmailPassword
     
@@ -27,8 +29,8 @@ configure server. Format is as follows:
         testemail@gmail.com
         hunter2
     
-The numbers you wish to text are also stored as plain text in a file called
-'nums' in the irc-sms-bot directory as follows:
+The numbers you wish to text are also stored as plain text in a file named
+whatever you'd like in the irc-sms-bot/lists directory as follows:
 
     Number1
     Number2
@@ -41,12 +43,7 @@ The numbers you wish to text are also stored as plain text in a file called
         1231231234
       
 TODO:
-    
-    - Custom messages
-    - Reading address books
-    - Passwords uniquer to address book
-    - Improve overall stability
-    - Only catch relevant irc messages when in send sequence
-        currently can get interrupted by others
 
-    
+    - Passwords unique to address book
+    - Improve overall stability
+    - Make it so pygooglevoice doesn't have to be installed on the machine
