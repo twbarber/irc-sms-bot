@@ -153,7 +153,6 @@ server= server_info[0]
 port = int(server_info[1])
 channel = server_info[2]
 auth_password = server_info[3]
-available_number_lists = get_available_lists()
 
 # Prints relevant configuration information
 print 'Server: ' + server + ':' + str(port)
@@ -186,10 +185,12 @@ while True:
     if data.find('smsbot help') != -1:
       send_help_dialog(sender.group(1))
     if data.find('smsbot lists') != -1:
+      available_number_lists = get_available_lists()
       send_lists_dialogue(channel)
   
   # New request to send message 
   if data.find('sendsms') != -1:
+    available_number_lists = get_available_lists()
     number_list = re.search("sendsms (\w+)", data)
     if  number_list:
       target_number_list = number_list.group(1)
