@@ -1,5 +1,5 @@
 IRC SMS Bot - Written for Python 2
-===========================
+==================================
 
 
 Uses **pygooglevoice** library by Joe McCall & Justin Quick
